@@ -69,6 +69,7 @@ def reprojection(PointCloud, l_camera_matrix, l_dist_coeff):
     img, jacobian = cv2.projectPoints(PointCloud, rvec, tvec, l_camera_matrix, l_dist_coeff)
     img = np.squeeze(img)
 
+    print(img)
     reproject_img = np.zeros(size)
     print(reproject_img.shape)
     for i in range(img.shape[0]):
@@ -92,9 +93,9 @@ def reprojection(PointCloud, l_camera_matrix, l_dist_coeff):
 
 def main():
 
-    rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
-    testpath = 'keyframe_1/data/scene_points/scene_points000000.tiff'
-    frame_data_file = 'keyframe_1/data/frame_data/frame_data000000.json'
+    rootpath = '/media/ssd2/EndoVis_depth/dataset_3'
+    testpath = 'keyframe_1/data/Points/scene_points000000.tiff'
+    frame_data_file = 'keyframe_1/data/Frames/frame_data000000.json'
     depth_file = join(rootpath, testpath)
     camera_file = join(rootpath, frame_data_file)
 

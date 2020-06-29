@@ -129,9 +129,10 @@ def get_img_pair(image_filepath, current_num, forward_step):
 def main():
 
 
-    rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
-    camera_filepath = join(rootpath, 'keyframe_1/data/frame_data')
-    pointcloud_filepath = join(rootpath, 'keyframe_1/data/scene_points')
+    rootpath = '/media/10TB/EndoVis_depth/dataset_3'
+    #rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
+    camera_filepath = join(rootpath, 'keyframe_1/data/Frames')
+    pointcloud_filepath = join(rootpath, 'keyframe_1/data/Points')
     img_filepath = join(rootpath, 'keyframe_1/data/left_finalpass')
 
 

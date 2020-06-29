@@ -2,7 +2,7 @@ from os import listdir
 from os.path import isfile, join, splitext
 import cv2
 import json
-
+import os
 
 def parse_video(video_file, rgb_filepath):
 
@@ -11,6 +11,7 @@ def parse_video(video_file, rgb_filepath):
     vidcap = cv2.VideoCapture(video_file)
     success, frame = vidcap.read()
     count = 0
+    os.makedirs(rgb_filepath, exist_ok=True)
 
     while success:
         cv2.imwrite(join(rgb_filepath, 'frame_data%.6d.png' % count), frame)
@@ -27,13 +28,15 @@ def video_parser(path):
     rootpath = path
 
     keyframe_list = [join(rootpath, kf) for kf in listdir(rootpath) if ('keyframe' in kf and 'ignore' not in kf)]
+    #import pdb; pdb.set_trace()
     for kf in keyframe_list:
+        print(kf)
         video_file = join(rootpath, kf) + '/data/rgb.mp4'
         rgb_filepath = join(rootpath, kf) + '/data/rgb_data'
-
         parse_video(video_file, rgb_filepath)
 
 
-if __name__ == '__video_parser__':
+if __name__ == '__main__':
     path = '/media/eikoloki/TOSHIBA EXT/MICCAI_SCARED/dataset3'
-    video_parser(path)
+    rootpath = '/media/10TB/EndoVis_depth/dataset_7'
+    video_parser(rootpath)

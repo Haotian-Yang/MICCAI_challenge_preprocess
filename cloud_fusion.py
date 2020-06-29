@@ -90,8 +90,10 @@ def fusion_frame(camera_filepath, scene_filepath, current_frame, forward_frame_n
         forward_pose_pool.append(forward_pose)
 
     for m in range(backward_frame_num):
-        backward_scene = tiff_reader(join(scene_filepath, "scene_points%.6d.tiff" % (current_frame - m)))
-        backward_pose = camera_pose_reader(join(camera_filepath, "frame_data%.6d.json" % (current_frame - m)))
+#        backward_scene = tiff_reader(join(scene_filepath, "scene_points%.6d.tiff" % (current_frame - m)))
+#        backward_pose = camera_pose_reader(join(camera_filepath, "frame_data%.6d.json" % (current_frame - m)))
+        backward_scene = tiff_reader(join(scene_filepath, "scene_points%.6d.tiff" % (m)))
+        backward_pose = camera_pose_reader(join(camera_filepath, "frame_data%.6d.json" % (m)))
         backward_scene_pool.append(backward_scene)
         backward_pose_pool.append(backward_pose)
 
@@ -135,13 +137,17 @@ def fusion_frame(camera_filepath, scene_filepath, current_frame, forward_frame_n
 
 
 def main():
-    rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
-    camera_filepath = join(rootpath, 'keyframe_1/data/frame_data')
-    scene_filepath = join(rootpath, 'keyframe_1/data/scene_points')
+    #rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset1'
+    rootpath = '/media/10TB/EndoVis_depth/dataset_4'
+    camera_filepath = join(rootpath, 'keyframe_2/data/Frames')
+    scene_filepath = join(rootpath, 'keyframe_2/data/Points')
 
-    PointCloud_pool = fusion_frame(camera_filepath, scene_filepath, 6, 10, 5)
+    PointCloud_pool = fusion_frame(camera_filepath, scene_filepath, 0, 0, 0)
     l_camera_matrix, l_dist_coeff = camera_param_reader(join(camera_filepath, 'frame_data%.6d.json' % 6))
     reproject_img = reprojection(PointCloud_pool, l_camera_matrix, l_dist_coeff)
+
+    plt.imshow(reproject_img)
+    plt.show()
     tiff.imsave(join(rootpath, 'keyframe_1/reproj_img.tiff'), reproject_img.astype(np.float32))
 
 if __name__ == '__main__':

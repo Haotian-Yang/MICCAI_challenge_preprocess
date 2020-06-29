@@ -1,6 +1,7 @@
 import cv2
 from os import listdir
 from os.path import join, split, splitext
+import os
 import json
 import numpy as np
 
@@ -51,10 +52,20 @@ def stereo_rectify(path):
 
     keyframe_list = [join(rootpath, kf) for kf in listdir(rootpath) if ('keyframe' in kf and 'ignore' not in kf)]
     for kf in keyframe_list:
+
+        if 'keyframe_5' in kf:
+            continue
         left_raw_filepath = join(rootpath, kf) + '/data/left'
         right_raw_filepath = join(rootpath, kf) + '/data/right'
-        frame_para_filepath = join(rootpath, kf) + '/data/frame_data'
+        frame_para_filepath = join(rootpath, kf) + '/data/Frames'
         img_filelist = [sf for sf in listdir(left_raw_filepath) if '.png' in sf]
+        left_finalpass_dir = join(rootpath, kf) + '/data/left_finalpass/'
+        right_finalpass_dir = join(rootpath, kf) + '/data/right_finalpass/'
+        reprojection_dir = join(rootpath, kf) + '/data/reprojection_data/'
+        os.makedirs(left_finalpass_dir, exist_ok=True)
+        os.makedirs(right_finalpass_dir, exist_ok=True)
+        os.makedirs(reprojection_dir, exist_ok=True)
+
         for sf in img_filelist:
             # stereo rectify
             left_raw_file = join(left_raw_filepath, sf)
@@ -69,12 +80,17 @@ def stereo_rectify(path):
 
 
             # save final pass image and reprojection matrix
-            left_finalpass_savefile = join(rootpath, kf) + '/data/left_finalpass/' + sf
-            right_finalpass_savefile = join(rootpath, kf) + '/data/right_finalpass/' + sf
-            reprojection_file = join(rootpath, kf) + '/data/reprojection_data/' + filename + '.json'
+
+
+            left_finalpass_savefile = left_finalpass_dir + sf
+            right_finalpass_savefile = right_finalpass_dir + sf
+            reprojection_file = reprojection_dir + filename + '.json'
             save_finalpass(left_finalpass, right_finalpass, left_finalpass_savefile, right_finalpass_savefile)
             save_Q(Q, reprojection_file)
 
-if __name__ == '__stereo_rectify__':
-    path = '/media/eikoloki/TOSHIBA EXT/MICCAI_SCARED/dataset3'
-    stereo_rectify(path)
+if __name__ == '__main__':
+    #path = '/media/eikoloki/TOSHIBA EXT/MICCAI_SCAlED/dataset3'
+    #rootpath = '/media/10TB/EndoVis_depth/dataset_1'
+    for i in range(3,7):
+        rootpath = '/media/10TB/EndoVis_depth/dataset_' + str(i)
+        stereo_rectify(rootpath)

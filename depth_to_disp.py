@@ -1,5 +1,6 @@
 import cv2
 import json
+import os
 from os.path import join, splitext, split
 from os import listdir
 import tifffile as tiff
@@ -78,17 +79,25 @@ def read_Q(reprojection_file):
 
 def depth_to_disparity(path):
     rootpath = path
-    keyframe_list = ['keyframe_4']
+    #keyframe_list = ['keyframe_4']
+    keyframe_list = [join(rootpath, kf) for kf in listdir(rootpath) if ('keyframe' in kf and 'ignore' not in kf)]
+
     for kf in keyframe_list:
+
+        if 'keyframe_5' in kf:
+            continue
+
         reprojection_filepath = join(rootpath, kf) + '/data/reprojection_data'
-        coor_filepath = join(rootpath,kf) + '/data/scene_points'
-        disp_filepath = join(rootpath,kf) + '/data/disparity'
+        coor_filepath = join(rootpath,kf) + '/data/Points'
+        disp_filepath = join(rootpath,kf) + '/data/disparity_pfm'
         frame_list = listdir(reprojection_filepath)
+        os.makedirs(disp_filepath, exist_ok=True)
+
 
         for i in range(len(frame_list)):
             reprojection_data = reprojection_filepath + '/frame_data%.6d.json' % i
             coor_data = coor_filepath + '/scene_points%.6d.tiff' % i
-            disp_data = disp_filepath + '/frame_data%.6d.tiff' % i
+            disp_data = disp_filepath + '/frame_data%.6d.pfm' % i
             print('Saving disparity to:', disp_data)
 
             Q = read_Q(reprojection_data)
@@ -100,5 +109,5 @@ def depth_to_disparity(path):
 
 
 if __name__ == '__main__':
-    path = '/media/eikoloki/TOSHIBA EXT/MICCAI_SCARED/dataset2'
+    path = '/media/10TB/EndoVis_depth/dataset_2'
     depth_to_disparity(path)
